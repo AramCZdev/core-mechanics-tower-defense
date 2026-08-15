@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Tower Defense: Your Path"
+config/name="Tower Defense: Their Path"
 config/version="1.0.0"
 run/main_scene="uid://ticqm3fnw6op"
 config/features=PackedStringArray("4.7", "GL Compatibility")

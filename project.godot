@@ -10,14 +10,34 @@ config_version=5
 
 [application]
 
-config/name="Tower Defense"
+config/name="Tower Defense: Your Path"
+config/version="1.0.0"
+run/main_scene="uid://ticqm3fnw6op"
 config/features=PackedStringArray("4.7", "GL Compatibility")
+boot_splash/show_image=false
+boot_splash/stretch_mode=0
+boot_splash/use_filter=false
 config/icon="res://icon.svg"
 
 [display]
 
+window/size/viewport_width=1280
+window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[file_customization]
+
+folder_colors={
+"res://Assets/": "green",
+"res://Music & SFX/": "purple",
+"res://Scenes/": "blue",
+"res://Scripts/": "yellow"
+}
+
+[gui]
+
+theme/custom_font="uid://l218s6r72d63"
 
 [physics]
 

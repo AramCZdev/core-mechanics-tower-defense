@@ -117,9 +117,9 @@ script = ExtResource("1_sij1s")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=920900545]
 limit_left = 0
-limit_top = 0
+limit_top = -1
 limit_right = 1280
-limit_bottom = 720
+limit_bottom = 719
 
 [node name="Map" type="Node2D" parent="." unique_id=911469217]
 z_index = 11
@@ -179,6 +179,21 @@ anchor_bottom = 1.0
 offset_top = -43.0
 grow_horizontal = 2
 grow_vertical = 0
+
+[node name="Coin Counter" type="Label" parent="CanvasLayer" unique_id=1445339214]
+z_index = 20
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -122.0
+offset_top = -42.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "coins"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="pressed" from="CanvasLayer/Shop/VBoxContainer/NormalTowerButton" to="." method="_on_normal_tower_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Shop/VBoxContainer/FastTowerButton" to="." method="_on_fast_tower_button_pressed"]

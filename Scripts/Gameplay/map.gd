@@ -131,16 +131,38 @@ func _unhandled_input(event: InputEvent) -> void:
 			if cell.x >= 0 and cell.x < GRID_WIDTH and cell.y >= 0 and cell.y < GRID_HEIGHT:
 				if cell != START_CELL and cell != BASE_CELL:
 					if not blocked_cells.has(cell):
+						var enemy_cell: Vector2i = position_to_cell(enemy.position)
+
+						# Don't place on the enemy
+						if cell == enemy_cell:
+							print("Cannot place a tower on the enemy!")
+							return
+
 						var cost: int = game.get_selected_tower_cost()
 
-						if game.coins < cost:
+						# Check money BEFORE doing anything with the placement
+						if cost > game.coins:
 							print("Not enough coins!")
 							return
 
-						game.coins -= cost
-
-						blocked_cells.append(cell)
+						# Temporarily block the cell
 						astar.set_point_solid(cell, true)
+
+						# Check whether the enemy can still reach B
+						var test_path: Array[Vector2i] = astar.get_id_path(
+							enemy_cell,
+							BASE_CELL
+						)
+
+						if test_path.is_empty():
+							astar.set_point_solid(cell, false)
+
+							print("Cannot place tower: it would block the enemy!")
+							return
+
+						# Everything is valid, so actually buy the tower
+						game.coins -= cost
+						blocked_cells.append(cell)
 
 						print("Placed tower for ", cost, " coins")
 						print("Coins remaining: ", game.coins)

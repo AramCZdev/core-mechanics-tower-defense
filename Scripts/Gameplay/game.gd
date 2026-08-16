@@ -1,5 +1,7 @@
 extends Node2D
 
+@onready var coin_counter = $"CanvasLayer/Coin Counter"
+
 enum TowerType {
 	NORMAL,
 	FAST,
@@ -13,6 +15,8 @@ const CANON_COST: int = 200
 var selected_tower: TowerType = TowerType.NORMAL
 var coins: int = 300
 
+func _process(_delta: float) -> void:
+	coin_counter.text = str(coins)
 
 func _on_normal_tower_button_pressed() -> void:
 	selected_tower = TowerType.NORMAL

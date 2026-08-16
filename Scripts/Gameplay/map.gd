@@ -129,6 +129,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			var cell: Vector2i = mouse_to_cell()
 
+			if blocked_cells.has(cell):
+				action_text.text = "A tower is already there"
+				return
+
 			if cell.x >= 0 and cell.x < GRID_WIDTH and cell.y >= 0 and cell.y < GRID_HEIGHT:
 				if cell != START_CELL and cell != BASE_CELL:
 					if not blocked_cells.has(cell):

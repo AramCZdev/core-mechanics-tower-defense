@@ -12,6 +12,7 @@ const BASE_ATTACK_RANGE := 200.0
 
 @onready var game = get_tree().current_scene
 @onready var enemy = get_parent().get_node("Enemy")
+@onready var action_text = $"../CanvasLayer/Bottom Panel/Action Text"
 
 var astar := AStarGrid2D.new()
 var blocked_cells: Array[Vector2i] = []
@@ -135,14 +136,17 @@ func _unhandled_input(event: InputEvent) -> void:
 
 						# Don't place on the enemy
 						if cell == enemy_cell:
-							print("Cannot place a tower on the enemy!")
+							action_text.text = "Cannot place a tower on the enemy"
+							print("Cannot place a tower on the enemy")
 							return
 
 						var cost: int = game.get_selected_tower_cost()
 
 						# Check money BEFORE doing anything with the placement
 						if cost > game.coins:
-							print("Not enough coins!")
+							
+							action_text.text ="Not enough coins"
+							print("Not enough coins")
 							return
 
 						# Temporarily block the cell
@@ -156,14 +160,16 @@ func _unhandled_input(event: InputEvent) -> void:
 
 						if test_path.is_empty():
 							astar.set_point_solid(cell, false)
-
-							print("Cannot place tower: it would block the enemy!")
+							
+							action_text.text = "Cannot place tower it would block the enemy"
+							print("Cannot place tower it would block the enemy")
 							return
 
 						# Everything is valid, so actually buy the tower
 						game.coins -= cost
 						blocked_cells.append(cell)
 
+						action_text.text = ""
 						print("Placed tower for ", cost, " coins")
 						print("Coins remaining: ", game.coins)
 

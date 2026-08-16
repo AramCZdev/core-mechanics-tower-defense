@@ -180,6 +180,24 @@ offset_top = -43.0
 grow_horizontal = 2
 grow_vertical = 0
 
+[node name="Action Text" type="Label" parent="CanvasLayer/Bottom Panel" unique_id=494409875]
+z_index = 20
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -370.25
+offset_top = -21.0
+offset_right = 370.25
+offset_bottom = 21.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Coin Counter" type="Label" parent="CanvasLayer" unique_id=1445339214]
 z_index = 20
 anchors_preset = 3

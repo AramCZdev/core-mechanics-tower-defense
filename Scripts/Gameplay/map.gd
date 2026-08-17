@@ -131,6 +131,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			var cell: Vector2i = mouse_to_cell()
 
 			if blocked_cells.has(cell):
+				action_text.add_theme_color_override("font_color", Color.RED)
 				action_text.text = "A tower is already there"
 				return
 
@@ -144,6 +145,7 @@ func _unhandled_input(event: InputEvent) -> void:
 							var enemy_cell: Vector2i = position_to_cell(enemy_node.position)
 
 							if cell == enemy_cell:
+								action_text.add_theme_color_override("font_color", Color.RED)
 								action_text.text = "Cannot place a tower on the enemy"
 								print("Cannot place a tower on the enemy")
 								return
@@ -153,11 +155,13 @@ func _unhandled_input(event: InputEvent) -> void:
 						# Check money BEFORE doing anything with the placement
 						if cost > game.coins:
 							
+							action_text.add_theme_color_override("font_color", Color.RED)
 							action_text.text ="Not enough coins"
 							print("Not enough coins")
 							return
 
 						if not can_place_tower(cell):
+							action_text.add_theme_color_override("font_color", Color.RED)
 							action_text.text = "Cannot place a tower it would block the enemy"
 							print("Cannot place a tower it would block the enemy")
 							return

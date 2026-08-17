@@ -18,10 +18,13 @@ const BASE_ATTACK_RANGE := 200.0
 var astar := AStarGrid2D.new()
 var blocked_cells: Array[Vector2i] = []
 var hovered_cell := Vector2i(-1, -1)
+var ghost_tower: Node2D = null
 
 func _ready() -> void:
 	setup_pathfinding()
 	queue_redraw()
+
+
 
 func setup_pathfinding() -> void:
 	astar.region = Rect2i(0, 0, GRID_WIDTH, GRID_HEIGHT)
@@ -121,8 +124,13 @@ func _unhandled_input(event: InputEvent) -> void:
 
 		if cell.x >= 0 and cell.x < GRID_WIDTH and cell.y >= 0 and cell.y < GRID_HEIGHT:
 			hovered_cell = cell
+			update_ghost_tower()
 		else:
 			hovered_cell = Vector2i(-1, -1)
+
+			if ghost_tower != null:
+				ghost_tower.queue_free()
+				ghost_tower = null
 
 		queue_redraw()
 
@@ -242,3 +250,13 @@ func can_place_tower(cell: Vector2i) -> bool:
 	# Everything is reachable
 	astar.set_point_solid(cell, false)
 	return true
+
+func update_ghost_tower() -> void:
+	if ghost_tower == null:
+		ghost_tower = tower_scene.instantiate()
+		ghost_tower.is_ghost = true
+		add_child(ghost_tower)
+
+	ghost_tower.position = cell_to_position(hovered_cell)
+	ghost_tower.setup_tower(game.selected_tower)
+	ghost_tower.modulate.a = 0.5

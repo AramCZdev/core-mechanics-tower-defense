@@ -9,6 +9,8 @@ var attack_range: float
 var current_target: Node2D = null
 var cooldown_timer: float = 0.0
 
+var is_ghost: bool = false
+
 func setup_tower(type: int) -> void:
 	tower_type = type
 
@@ -33,6 +35,9 @@ func setup_tower(type: int) -> void:
 
 
 func _process(delta: float) -> void:
+	if is_ghost:
+		return
+
 	cooldown_timer -= delta
 
 	# Remove dead/out-of-range target

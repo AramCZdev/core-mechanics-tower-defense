@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ticqm3fnw6op"]
 
 [ext_resource type="Script" uid="uid://ckx2y1kas2yno" path="res://Scripts/Menus/main.gd" id="1_r150o"]
+[ext_resource type="PackedScene" uid="uid://hhckm4437dhp" path="res://Scenes/Gameplay/Objects/grass.tscn" id="2_idj7w"]
 
 [node name="Control" type="Control" unique_id=462977758]
 layout_mode = 3
@@ -10,6 +11,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_r150o")
+
+[node name="Grass" parent="." unique_id=986690491 instance=ExtResource("2_idj7w")]
 
 [node name="Title" type="Label" parent="." unique_id=1784318278]
 layout_mode = 1

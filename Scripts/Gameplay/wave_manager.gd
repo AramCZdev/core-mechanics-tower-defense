@@ -14,17 +14,26 @@ const TIME_BETWEEN_ENEMIES := 1.0
 
 
 func _ready() -> void:
+	print("WAVE MANAGER READY")
+
 	load_waves()
 
+	print("Waves loaded: ", waves.size())
+
 	await get_tree().create_timer(2.0).timeout
-	start_wave()
+
+	print("Calling start_wave()")
+
+	await start_wave()
+
+	print("start_wave() finished")
 
 
 func start_wave() -> void:
 	while current_wave < waves.size():
 		current_wave += 1
 
-		print("Starting wave ", current_wave)
+		print(">>> STARTING WAVE ", current_wave)
 
 		spawning = true
 
@@ -32,24 +41,34 @@ func start_wave() -> void:
 
 		spawning = false
 
-		# Wait until every enemy is gone
-		while get_tree().get_nodes_in_group("enemies").size() > 0:
+		print(">>> FINISHED SPAWNING WAVE ", current_wave)
+		print(">>> ENEMIES ALIVE: ", get_tree().get_nodes_in_group("enemies").size())
+
+		while not get_tree().get_nodes_in_group("enemies").is_empty():
 			await get_tree().create_timer(0.2).timeout
 
-		wave_complete_action_text()
+		print(">>> WAVE ", current_wave, " COMPLETED")
 
-		print("Wave ", current_wave, " completed!")
+		await wave_complete_action_text()
+
+		print(">>> INTERMISSION FINISHED")
 
 		await get_tree().create_timer(5.0).timeout
 
-	print("All waves completed!")
+		print(">>> LOOPING TO NEXT WAVE")
+
+	print(">>> ALL WAVES COMPLETED")
 
 
 func spawn_wave() -> void:
 	var wave: Dictionary = waves[current_wave - 1]
 	var enemies: Array = wave["enemies"]
 
+	print("Wave ", current_wave, " has ", enemies.size(), " enemies")
+
 	for enemy_type: Variant in enemies:
+		print("Spawning: ", enemy_type)
+
 		spawn_enemy(str(enemy_type))
 
 		await get_tree().create_timer(TIME_BETWEEN_ENEMIES).timeout
@@ -88,21 +107,23 @@ func get_enemy_type(type_name: String) -> int:
 	match type_name:
 		"normal":
 			return 0
-
 		"fast":
 			return 1
-
 		"tank":
 			return 2
-
 		_:
 			print("Unknown enemy type: ", type_name)
 			return 0
 
+
 func wave_complete_action_text() -> void:
-		action_text.add_theme_color_override("font_color", Color.WHITE)
-		action_text.text = "Wave " + str(current_wave) + " completed!"
-		await get_tree().create_timer(1).timeout
-		action_text.text = "intermission"
-		await get_tree().create_timer(4).timeout
-		action_text.text = ""
+	action_text.add_theme_color_override("font_color", Color.WHITE)
+	action_text.text = "Wave " + str(current_wave) + " completed!"
+
+	await get_tree().create_timer(1.0).timeout
+
+	action_text.text = "intermission"
+
+	await get_tree().create_timer(4.0).timeout
+
+	action_text.text = ""

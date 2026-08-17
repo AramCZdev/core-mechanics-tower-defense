@@ -18,6 +18,7 @@ var path_index := 0
 var hit_flash_timer: float = 0.0
 const HIT_FLASH_DURATION := 0.1
 var coin_reward: int = 100
+var is_dead := false
 
 @onready var map: Node2D = get_parent().get_node("Map")
 @onready var game = get_parent()
@@ -25,8 +26,6 @@ var coin_reward: int = 100
 
 func _ready() -> void:
 	add_to_group("enemies")
-
-	setup_enemy(EnemyType.NORMAL)
 
 	map.path_changed.connect(_on_path_changed)
 
@@ -46,6 +45,7 @@ func _process(delta: float) -> void:
 		queue_redraw()
 
 	if path_index >= path.size():
+		die()
 		return
 
 	var target: Vector2 = map.cell_to_position(path[path_index])
@@ -56,6 +56,9 @@ func _process(delta: float) -> void:
 		path_index += 1
 
 func take_damage(amount: int) -> void:
+	if is_dead:
+		return
+
 	health -= amount
 
 	hit_flash_timer = HIT_FLASH_DURATION
@@ -67,7 +70,12 @@ func take_damage(amount: int) -> void:
 		die()
 
 func die() -> void:
+	if is_dead:
+		return
+
+	is_dead = true
 	game.coins += coin_reward
+	remove_from_group("enemies")
 	queue_free()
 
 func _on_path_changed() -> void:

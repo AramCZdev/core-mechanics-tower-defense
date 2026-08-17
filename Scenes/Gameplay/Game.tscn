@@ -128,9 +128,6 @@ z_index = 11
 script = ExtResource("1_ob1ve")
 tower_scene = ExtResource("5_jvolu")
 
-[node name="Enemy" parent="." unique_id=8266434 groups=["enemies"] instance=ExtResource("3_knbc6")]
-z_index = 10
-
 [node name="WaveManager" type="Node2D" parent="." unique_id=1226211191]
 script = ExtResource("5_cvgtu")
 enemy_scene = ExtResource("3_knbc6")

@@ -19,13 +19,13 @@ func setup_tower(type: int) -> void:
 			attack_range = 200.0
 
 		1: # FAST
-			damage = 10
+			damage = 5
 			attack_cooldown = 0.3
 			attack_range = 170.0
 
 		2: # CANON
-			damage = 100
-			attack_cooldown = 2.0
+			damage = 80
+			attack_cooldown = 4.0
 			attack_range = 250.0
 
 	queue_redraw()

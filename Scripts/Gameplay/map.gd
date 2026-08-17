@@ -13,7 +13,6 @@ const BASE_CELL := Vector2i(11, 3)
 const BASE_ATTACK_RANGE := 200.0
 
 @onready var game = get_tree().current_scene
-@onready var enemy = get_parent().get_node("Enemy")
 @onready var action_text = $"../CanvasLayer/Bottom Panel/Action Text"
 
 var astar := AStarGrid2D.new()
@@ -138,13 +137,16 @@ func _unhandled_input(event: InputEvent) -> void:
 			if cell.x >= 0 and cell.x < GRID_WIDTH and cell.y >= 0 and cell.y < GRID_HEIGHT:
 				if cell != START_CELL and cell != BASE_CELL:
 					if not blocked_cells.has(cell):
-						var enemy_cell: Vector2i = position_to_cell(enemy.position)
+						for enemy_node in get_tree().get_nodes_in_group("enemies"):
+							if not is_instance_valid(enemy_node):
+								continue
 
-						# Don't place on the enemy
-						if cell == enemy_cell:
-							action_text.text = "Cannot place a tower on the enemy"
-							print("Cannot place a tower on the enemy")
-							return
+							var enemy_cell: Vector2i = position_to_cell(enemy_node.position)
+
+							if cell == enemy_cell:
+								action_text.text = "Cannot place a tower on the enemy"
+								print("Cannot place a tower on the enemy")
+								return
 
 						var cost: int = game.get_selected_tower_cost()
 
@@ -158,18 +160,24 @@ func _unhandled_input(event: InputEvent) -> void:
 						# Temporarily block the cell
 						astar.set_point_solid(cell, true)
 
-						# Check whether the enemy can still reach B
-						var test_path: Array[Vector2i] = astar.get_id_path(
-							enemy_cell,
-							BASE_CELL
-						)
+						# Check whether every enemy can still reach B
+						for enemy_node in get_tree().get_nodes_in_group("enemies"):
+							if not is_instance_valid(enemy_node):
+								continue
 
-						if test_path.is_empty():
-							astar.set_point_solid(cell, false)
+							var current_enemy_cell: Vector2i = position_to_cell(enemy_node.position)
 
-							action_text.text = "Cannot place tower it would block the enemy"
-							print("Cannot place tower it would block the enemy")
-							return
+							var test_path: Array[Vector2i] = astar.get_id_path(
+								current_enemy_cell,
+								BASE_CELL
+							)
+
+							if test_path.is_empty():
+								astar.set_point_solid(cell, false)
+
+								action_text.text = "Cannot place a tower it would block the enemy"
+								print("Cannot place a tower it would block the enemy")
+								return
 
 						# Everything is valid, so actually buy the tower
 						game.coins -= cost

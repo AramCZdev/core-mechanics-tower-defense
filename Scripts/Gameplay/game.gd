@@ -9,8 +9,8 @@ enum TowerType {
 }
 
 const NORMAL_COST: int = 100
-const FAST_COST: int = 150
-const CANNON_COST: int = 200
+const FAST_COST: int = 200
+const CANNON_COST: int = 300
 
 var selected_tower: TowerType = TowerType.NORMAL
 var coins: int = 300

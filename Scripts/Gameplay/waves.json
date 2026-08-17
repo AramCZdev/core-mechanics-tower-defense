@@ -1,0 +1,35 @@
+{
+  "waves": [
+	{
+	  "enemies": [
+		"normal",
+		"normal",
+        "normal"
+	  ]
+	},
+	{
+	  "enemies": [
+		"normal",
+		"normal",
+		"fast",
+        "normal"
+	  ]
+	},
+	{
+	  "enemies": [
+		"fast",
+		"fast",
+		"normal",
+        "fast"
+	  ]
+	},
+	{
+	  "enemies": [
+		"tank",
+		"normal",
+		"normal",
+        "fast"
+	  ]
+	}
+  ]
+}

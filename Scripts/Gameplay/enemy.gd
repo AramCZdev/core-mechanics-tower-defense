@@ -1,6 +1,17 @@
 extends Node2D
 
-const SPEED := 100.0
+enum EnemyType {
+	NORMAL,
+	FAST,
+	TANK
+}
+
+var enemy_type: EnemyType = EnemyType.NORMAL
+
+var health: int
+var max_health: int
+var speed: float
+var reward: int
 
 var path: Array[Vector2i] = []
 var path_index := 0
@@ -9,6 +20,8 @@ var path_index := 0
 
 
 func _ready() -> void:
+	setup_enemy(EnemyType.NORMAL)
+
 	map.path_changed.connect(_on_path_changed)
 
 	path = map.calculate_enemy_path(map.START_CELL)
@@ -20,13 +33,14 @@ func _ready() -> void:
 	position = map.cell_to_position(path[0])
 
 
+
 func _process(delta: float) -> void:
 	if path_index >= path.size():
 		return
 
 	var target: Vector2 = map.cell_to_position(path[path_index])
 
-	position = position.move_toward(target, SPEED * delta)
+	position = position.move_toward(target, speed * delta)
 
 	if position.distance_to(target) < 2.0:
 		path_index += 1
@@ -40,4 +54,41 @@ func _on_path_changed() -> void:
 
 
 func _draw() -> void:
-	draw_circle(Vector2.ZERO, 20.0, Color.YELLOW)
+	var enemy_color: Color
+
+	match enemy_type:
+		EnemyType.NORMAL:
+			enemy_color = Color.GREEN
+
+		EnemyType.FAST:
+			enemy_color = Color.YELLOW
+
+		EnemyType.TANK:
+			enemy_color = Color.RED
+
+		_:
+			enemy_color = Color.GRAY
+
+	draw_circle(Vector2.ZERO, 20.0, enemy_color)
+
+func setup_enemy(type: EnemyType) -> void:
+	enemy_type = type
+
+	match enemy_type:
+		EnemyType.NORMAL:
+			max_health = 100
+			speed = 100.0
+			reward = 20
+
+		EnemyType.FAST:
+			max_health = 50
+			speed = 160.0
+			reward = 15
+
+		EnemyType.TANK:
+			max_health = 300
+			speed = 60.0
+			reward = 50
+
+	health = max_health
+	queue_redraw()

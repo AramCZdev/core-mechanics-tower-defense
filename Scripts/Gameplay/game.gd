@@ -5,18 +5,18 @@ extends Node2D
 enum TowerType {
 	NORMAL,
 	FAST,
-	CANON
+	CANNON
 }
 
 const NORMAL_COST: int = 100
 const FAST_COST: int = 150
-const CANON_COST: int = 200
+const CANNON_COST: int = 200
 
 var selected_tower: TowerType = TowerType.NORMAL
 var coins: int = 300
 
 func _process(_delta: float) -> void:
-	coin_counter.text = str(coins)
+	coin_counter.text = str(coins, "$")
 
 func _on_normal_tower_button_pressed() -> void:
 	selected_tower = TowerType.NORMAL
@@ -29,7 +29,7 @@ func _on_fast_tower_button_pressed() -> void:
 
 
 func _on_canon_button_pressed() -> void:
-	selected_tower = TowerType.CANON
+	selected_tower = TowerType.CANNON
 	print("Selected Canon")
 
 func get_selected_tower_cost() -> int:
@@ -38,7 +38,7 @@ func get_selected_tower_cost() -> int:
 			return NORMAL_COST
 		TowerType.FAST:
 			return FAST_COST
-		TowerType.CANON:
-			return CANON_COST
+		TowerType.CANNON:
+			return CANNON_COST
 
 	return 0

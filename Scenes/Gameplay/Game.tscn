@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://pwklip4ixo4t" path="res://Scripts/Gameplay/game.gd" id="1_sij1s"]
 [ext_resource type="Texture2D" uid="uid://ceq3wn2h3bleu" path="res://Assets/Images/Grass.png" id="2_ob1ve"]
 [ext_resource type="PackedScene" uid="uid://bos0riq70ot2u" path="res://Scenes/Gameplay/Objects/enemy.tscn" id="3_knbc6"]
+[ext_resource type="PackedScene" uid="uid://cxfeeai6j2gc3" path="res://Scenes/Gameplay/Objects/tower.tscn" id="5_jvolu"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gl6un"]
 texture = ExtResource("2_ob1ve")
@@ -124,6 +125,7 @@ limit_bottom = 719
 [node name="Map" type="Node2D" parent="." unique_id=911469217]
 z_index = 11
 script = ExtResource("1_ob1ve")
+tower_scene = ExtResource("5_jvolu")
 
 [node name="Enemy" parent="." unique_id=8266434 instance=ExtResource("3_knbc6")]
 z_index = 10
@@ -158,16 +160,22 @@ grow_horizontal = 2
 [node name="NormalTowerButton" type="Button" parent="CanvasLayer/Shop/VBoxContainer" unique_id=1093600158]
 layout_mode = 2
 size_flags_vertical = 3
+tooltip_text = "Normal Tower
+Costs: 100$"
 text = "N"
 
 [node name="FastTowerButton" type="Button" parent="CanvasLayer/Shop/VBoxContainer" unique_id=550311266]
 layout_mode = 2
 size_flags_vertical = 3
+tooltip_text = "Fast Tower
+Costs: 200$"
 text = "F"
 
 [node name="CanonButton" type="Button" parent="CanvasLayer/Shop/VBoxContainer" unique_id=241055836]
 layout_mode = 2
 size_flags_vertical = 3
+tooltip_text = "Cannon
+Costs: 300$"
 text = "C"
 
 [node name="Bottom Panel" type="Panel" parent="CanvasLayer" unique_id=1627182940]

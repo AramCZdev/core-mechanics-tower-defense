@@ -1,5 +1,7 @@
 extends Node2D
 
+@export var tower_scene: PackedScene
+
 signal path_changed
 
 const CELL_SIZE := 96
@@ -164,7 +166,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 						if test_path.is_empty():
 							astar.set_point_solid(cell, false)
-							
+
 							action_text.text = "Cannot place tower it would block the enemy"
 							print("Cannot place tower it would block the enemy")
 							return
@@ -172,6 +174,13 @@ func _unhandled_input(event: InputEvent) -> void:
 						# Everything is valid, so actually buy the tower
 						game.coins -= cost
 						blocked_cells.append(cell)
+
+						var tower = tower_scene.instantiate()
+
+						tower.position = cell_to_position(cell)
+						tower.setup_tower(game.selected_tower)
+
+						add_child(tower)
 
 						action_text.text = ""
 						print("Placed tower for ", cost, " coins")

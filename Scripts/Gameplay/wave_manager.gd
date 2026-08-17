@@ -4,6 +4,7 @@ extends Node2D
 
 @onready var map: Node2D = $"../Map"
 @onready var action_text = $"../CanvasLayer/Bottom Panel/Action Text"
+@onready var wave_counter = $"../CanvasLayer/Wave Counter"
 
 var current_wave: int = 0
 var enemies_to_spawn: int = 0
@@ -32,6 +33,7 @@ func _ready() -> void:
 func start_wave() -> void:
 	while current_wave < waves.size():
 		current_wave += 1
+		wave_counter.text = str("Wave ", current_wave)
 
 		print(">>> STARTING WAVE ", current_wave)
 
@@ -51,11 +53,8 @@ func start_wave() -> void:
 
 		await wave_complete_action_text()
 
-		print(">>> INTERMISSION FINISHED")
 
 		await get_tree().create_timer(5.0).timeout
-
-		print(">>> LOOPING TO NEXT WAVE")
 
 	print(">>> ALL WAVES COMPLETED")
 

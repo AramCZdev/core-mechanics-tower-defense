@@ -209,32 +209,36 @@ func can_place_tower(cell: Vector2i) -> bool:
 	# Temporarily block the cell
 	astar.set_point_solid(cell, true)
 
-	for enemy_node in get_tree().get_nodes_in_group("enemies"):
-		if not is_instance_valid(enemy_node):
-			continue
+	var enemies := get_tree().get_nodes_in_group("enemies")
 
-		var enemy_cell: Vector2i = position_to_cell(enemy_node.position)
-
-		# Make sure the enemy's current cell is actually valid
-		if not astar.is_in_boundsv(enemy_cell):
-			astar.set_point_solid(cell, false)
-			return false
-
-		var test_path: Array[Vector2i] = astar.get_id_path(
-			enemy_cell,
+	# No enemies yet: check that A can still reach B
+	if enemies.is_empty():
+		var start_path: Array[Vector2i] = astar.get_id_path(
+			START_CELL,
 			BASE_CELL
 		)
 
-		# No path at all
-		if test_path.is_empty():
+		if start_path.is_empty():
 			astar.set_point_solid(cell, false)
 			return false
 
-		# Path exists, but doesn't actually reach the base
-		if test_path[-1] != BASE_CELL:
-			astar.set_point_solid(cell, false)
-			return false
+	else:
+		# Enemies exist: check every enemy
+		for enemy_node in enemies:
+			if not is_instance_valid(enemy_node):
+				continue
 
-	# Everything can still reach the base
+			var current_enemy_cell: Vector2i = position_to_cell(enemy_node.position)
+
+			var enemy_path: Array[Vector2i] = astar.get_id_path(
+				current_enemy_cell,
+				BASE_CELL
+			)
+
+			if enemy_path.is_empty():
+				astar.set_point_solid(cell, false)
+				return false
+
+	# Everything is reachable
 	astar.set_point_solid(cell, false)
 	return true

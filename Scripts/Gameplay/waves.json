@@ -4,7 +4,6 @@
 	  "enemies": [
 		"normal",
 		"normal",
-        "normal"
 	  ]
 	},
 	{
@@ -12,7 +11,7 @@
 		"normal",
 		"normal",
 		"fast",
-        "normal"
+		"normal",
 	  ]
 	},
 	{
@@ -20,7 +19,7 @@
 		"fast",
 		"fast",
 		"normal",
-        "fast"
+		"fast",
 	  ]
 	},
 	{
@@ -28,8 +27,28 @@
 		"tank",
 		"normal",
 		"normal",
-        "fast"
+		"fast",
 	  ]
-	}
+	},
+	{
+	  "enemies": [
+		"tank",
+		"tank",
+		"fast",
+		"fast",
+	  ]
+	},
+	{
+	  "enemies": [
+		"fast",
+		"fast",
+		"fast",
+		"fast",
+		"fast",
+		"fast",
+		"fast",
+		"fast",
+	  ]
+	},
   ]
 }

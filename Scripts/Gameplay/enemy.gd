@@ -17,6 +17,7 @@ var path: Array[Vector2i] = []
 var path_index := 0
 var hit_flash_timer: float = 0.0
 const HIT_FLASH_DURATION := 0.1
+var coin_reward: int = 100
 
 @onready var map: Node2D = get_parent().get_node("Map")
 @onready var game = get_parent()
@@ -66,7 +67,7 @@ func take_damage(amount: int) -> void:
 		die()
 
 func die() -> void:
-	game.coins += 100
+	game.coins += coin_reward
 	queue_free()
 
 func _on_path_changed() -> void:
@@ -106,17 +107,17 @@ func setup_enemy(type: EnemyType) -> void:
 		EnemyType.NORMAL:
 			max_health = 100
 			speed = 100.0
-			reward = 20
+			coin_reward = 100
 
 		EnemyType.FAST:
-			max_health = 50
-			speed = 160.0
-			reward = 15
+			max_health = 60
+			speed = 180.0
+			coin_reward = 125
 
 		EnemyType.TANK:
 			max_health = 300
 			speed = 60.0
-			reward = 50
+			coin_reward = 250
 
 	health = max_health
 	queue_redraw()

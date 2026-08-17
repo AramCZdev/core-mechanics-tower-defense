@@ -48,11 +48,11 @@ func spawn_wave() -> void:
 func spawn_enemy(type_name: String) -> void:
 	var enemy = enemy_scene.instantiate()
 
-	get_parent().add_child(enemy)
-
 	var enemy_type: int = get_enemy_type(type_name)
 
 	enemy.setup_enemy(enemy_type)
+
+	get_parent().add_child(enemy)
 
 
 func load_waves() -> void:

@@ -20,19 +20,26 @@ func _ready() -> void:
 
 
 func start_wave() -> void:
-	if current_wave >= waves.size():
-		print("All waves completed!")
-		return
+	while current_wave < waves.size():
+		current_wave += 1
 
-	current_wave += 1
+		print("Starting wave ", current_wave)
 
-	print("Starting wave ", current_wave)
+		spawning = true
 
-	spawning = true
+		await spawn_wave()
 
-	await spawn_wave()
+		spawning = false
 
-	spawning = false
+		# Wait until every enemy is gone
+		while get_tree().get_nodes_in_group("enemies").size() > 0:
+			await get_tree().create_timer(0.2).timeout
+
+		print("Wave ", current_wave, " completed!")
+
+		await get_tree().create_timer(2.0).timeout
+
+	print("All waves completed!")
 
 
 func spawn_wave() -> void:

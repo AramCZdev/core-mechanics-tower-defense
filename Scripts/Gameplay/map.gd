@@ -157,27 +157,13 @@ func _unhandled_input(event: InputEvent) -> void:
 							print("Not enough coins")
 							return
 
-						# Temporarily block the cell
+						if not can_place_tower(cell):
+							action_text.text = "Cannot place a tower it would block the enemy"
+							print("Cannot place a tower it would block the enemy")
+							return
+
+						# Everything is valid, so actually block the cell
 						astar.set_point_solid(cell, true)
-
-						# Check whether every enemy can still reach B
-						for enemy_node in get_tree().get_nodes_in_group("enemies"):
-							if not is_instance_valid(enemy_node):
-								continue
-
-							var current_enemy_cell: Vector2i = position_to_cell(enemy_node.position)
-
-							var test_path: Array[Vector2i] = astar.get_id_path(
-								current_enemy_cell,
-								BASE_CELL
-							)
-
-							if test_path.is_empty():
-								astar.set_point_solid(cell, false)
-
-								action_text.text = "Cannot place a tower it would block the enemy"
-								print("Cannot place a tower it would block the enemy")
-								return
 
 						# Everything is valid, so actually buy the tower
 						game.coins -= cost
@@ -214,3 +200,37 @@ func mouse_to_cell() -> Vector2i:
 		floor(mouse_position.x / CELL_SIZE),
 		floor(mouse_position.y / CELL_SIZE)
 	)
+
+func can_place_tower(cell: Vector2i) -> bool:
+	# Temporarily block the cell
+	astar.set_point_solid(cell, true)
+
+	for enemy_node in get_tree().get_nodes_in_group("enemies"):
+		if not is_instance_valid(enemy_node):
+			continue
+
+		var enemy_cell: Vector2i = position_to_cell(enemy_node.position)
+
+		# Make sure the enemy's current cell is actually valid
+		if not astar.is_in_boundsv(enemy_cell):
+			astar.set_point_solid(cell, false)
+			return false
+
+		var test_path: Array[Vector2i] = astar.get_id_path(
+			enemy_cell,
+			BASE_CELL
+		)
+
+		# No path at all
+		if test_path.is_empty():
+			astar.set_point_solid(cell, false)
+			return false
+
+		# Path exists, but doesn't actually reach the base
+		if test_path[-1] != BASE_CELL:
+			astar.set_point_solid(cell, false)
+			return false
+
+	# Everything can still reach the base
+	astar.set_point_solid(cell, false)
+	return true

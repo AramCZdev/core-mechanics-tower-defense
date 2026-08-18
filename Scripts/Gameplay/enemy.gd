@@ -86,6 +86,27 @@ func _on_path_changed() -> void:
 
 
 func _draw() -> void:
+	# Health bar
+	var bar_width := 40.0
+	var bar_height := 5.0
+	var bar_position := Vector2(-bar_width / 2.0, -30.0)
+
+	# Red background
+	draw_rect(
+		Rect2(bar_position, Vector2(bar_width, bar_height)),
+		Color.RED
+	)
+
+	# Green health
+	var health_ratio := float(health) / float(max_health)
+
+	draw_rect(
+		Rect2(
+			bar_position,
+			Vector2(bar_width * health_ratio, bar_height)
+		),
+		Color.GREEN
+	)
 	var enemy_color: Color
 
 	if hit_flash_timer > 0.0:

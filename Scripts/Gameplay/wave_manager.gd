@@ -3,7 +3,7 @@ extends Node2D
 @export var enemy_scene: PackedScene
 
 @onready var map: Node2D = $"../Map"
-@onready var action_text = $"../CanvasLayer/Bottom Panel/Action Text"
+@onready var wave_text = $"../CanvasLayer/Bottom Panel/Wave Text"
 @onready var wave_counter = $"../CanvasLayer/Wave Counter"
 
 var current_wave: int = 0
@@ -48,6 +48,8 @@ func start_wave() -> void:
 
 		while not get_tree().get_nodes_in_group("enemies").is_empty():
 			await get_tree().create_timer(0.2).timeout
+		
+		$"../CanvasLayer/Bottom Panel/Action Text".text = ""
 
 		print(">>> WAVE ", current_wave, " COMPLETED")
 
@@ -116,13 +118,13 @@ func get_enemy_type(type_name: String) -> int:
 
 
 func wave_complete_action_text() -> void:
-	action_text.add_theme_color_override("font_color", Color.WHITE)
-	action_text.text = "Wave " + str(current_wave) + " completed!"
+	wave_text.add_theme_color_override("font_color", Color.WHITE)
 
+	wave_text.text = "Wave " + str(current_wave) + " completed!"
 	await get_tree().create_timer(1.0).timeout
 
-	action_text.text = "intermission"
+	for seconds in [3, 2, 1]:
+		wave_text.text = "Next wave in " + str(seconds) + "..."
+		await get_tree().create_timer(1.0).timeout
 
-	await get_tree().create_timer(4.0).timeout
-
-	action_text.text = ""
+	wave_text.text = ""

@@ -12,6 +12,8 @@ var cooldown_timer: float = 0.0
 var is_ghost: bool = false
 var placed_cost: int = 0
 
+@onready var map: Node2D = get_parent()
+
 func setup_tower(type: int) -> void:
 	tower_type = type
 
@@ -80,7 +82,11 @@ func find_target() -> Node2D:
 
 
 func attack(target: Node2D) -> void:
-	target.take_damage(damage)
+	var tower_count: int = map.tower_count
+	var multiplier: float = 1.0 - max(0, tower_count - 5) * 0.01
+	var final_damage: int = int(damage * multiplier)
+
+	target.take_damage(final_damage)
 
 	print(
 		"Tower ",
@@ -88,7 +94,7 @@ func attack(target: Node2D) -> void:
 		" attacked ",
 		target.name,
 		" for ",
-		damage,
+		final_damage,
 		" damage"
 	)
 

@@ -194,7 +194,7 @@ func setup_enemy(type: EnemyType) -> void:
 			base_damage = 1
 
 		EnemyType.FLYING:
-			max_health = 100
+			max_health = 250
 			base_speed = 200.0
 			coin_reward = 200
 			base_damage = 2

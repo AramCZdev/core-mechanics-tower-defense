@@ -152,6 +152,12 @@ func _unhandled_input(event: InputEvent) -> void:
 
 			if cell.x >= 0 and cell.x < GRID_WIDTH and cell.y >= 0 and cell.y < GRID_HEIGHT:
 				if cell != START_CELL and cell != BASE_CELL:
+					var dist_to_spawn: int = absi(cell.x - START_CELL.x) + absi(cell.y - START_CELL.y)
+					if dist_to_spawn <= 1:
+						action_text.add_theme_color_override("font_color", Color.RED)
+						action_text.text = "Too close to enemy spawn"
+						return
+
 					if not blocked_cells.has(cell):
 						for enemy_node in get_tree().get_nodes_in_group("enemies"):
 							if not is_instance_valid(enemy_node):

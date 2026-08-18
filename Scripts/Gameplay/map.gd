@@ -16,6 +16,7 @@ const BASE_ATTACK_RANGE := 200.0
 @onready var action_text = $"../CanvasLayer/Bottom Panel/Action Text"
 
 var astar := AStarGrid2D.new()
+var flying_astar := AStarGrid2D.new()
 var blocked_cells: Array[Vector2i] = []
 var hovered_cell := Vector2i(-1, -1)
 var ghost_tower: Node2D = null
@@ -32,6 +33,11 @@ func setup_pathfinding() -> void:
 	astar.cell_size = Vector2(CELL_SIZE, CELL_SIZE)
 	astar.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
 	astar.update()
+
+	flying_astar.region = Rect2i(0, 0, GRID_WIDTH, GRID_HEIGHT)
+	flying_astar.cell_size = Vector2(CELL_SIZE, CELL_SIZE)
+	flying_astar.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
+	flying_astar.update()
 
 func _draw() -> void:
 	# Grid
@@ -220,6 +226,9 @@ func sell_tower(cell: Vector2i) -> void:
 
 func calculate_enemy_path(start_cell: Vector2i) -> Array[Vector2i]:
 	return astar.get_id_path(start_cell, BASE_CELL)
+
+func calculate_flying_path(start_cell: Vector2i) -> Array[Vector2i]:
+	return flying_astar.get_id_path(start_cell, BASE_CELL)
 
 func get_path_stretch() -> float:
 	return 1.0 + log(tower_count + 1) * 0.25

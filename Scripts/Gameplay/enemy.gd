@@ -4,7 +4,8 @@ enum EnemyType {
 	NORMAL,
 	FAST,
 	TANK,
-	FANATIC
+	FANATIC,
+	FLYING
 }
 
 var enemy_type: EnemyType = EnemyType.NORMAL
@@ -31,9 +32,11 @@ var current_direction: Vector2 = Vector2.RIGHT
 func _ready() -> void:
 	add_to_group("enemies")
 
-	map.path_changed.connect(_on_path_changed)
-
-	path = map.calculate_enemy_path(map.START_CELL)
+	if enemy_type == EnemyType.FLYING:
+		path = map.calculate_flying_path(map.START_CELL)
+	else:
+		map.path_changed.connect(_on_path_changed)
+		path = map.calculate_enemy_path(map.START_CELL)
 
 	if path.is_empty():
 		print("No path to base!")
@@ -55,7 +58,9 @@ func _process(delta: float) -> void:
 	var target: Vector2 = map.cell_to_position(path[path_index])
 	current_direction = (target - position).normalized()
 
-	speed = base_speed * map.get_path_stretch()
+	speed = base_speed
+	if enemy_type != EnemyType.FLYING:
+		speed *= map.get_path_stretch()
 
 	position = position.move_toward(target, speed * delta)
 
@@ -88,8 +93,8 @@ func die() -> void:
 				continue
 			if ally.is_dead:
 				continue
-			if global_position.distance_to(ally.global_position) <= 120.0:
-				ally.health = min(ally.health + 50, ally.max_health)
+			if global_position.distance_to(ally.global_position) <= 160.0:
+				ally.health = min(ally.health + 75, ally.max_health)
 				ally.queue_redraw()
 
 	game.coins += coin_reward
@@ -152,6 +157,9 @@ func _draw() -> void:
 			EnemyType.FANATIC:
 				enemy_color = Color.PURPLE
 
+			EnemyType.FLYING:
+				enemy_color = Color.CYAN
+
 			_:
 				enemy_color = Color.GRAY
 
@@ -181,9 +189,15 @@ func setup_enemy(type: EnemyType) -> void:
 
 		EnemyType.FANATIC:
 			max_health = 80
-			base_speed = 90.0
+			base_speed = 100.0
 			coin_reward = 150
 			base_damage = 1
+
+		EnemyType.FLYING:
+			max_health = 100
+			base_speed = 200.0
+			coin_reward = 200
+			base_damage = 2
 
 	health = max_health
 	speed = base_speed

@@ -19,6 +19,7 @@ var astar := AStarGrid2D.new()
 var blocked_cells: Array[Vector2i] = []
 var hovered_cell := Vector2i(-1, -1)
 var ghost_tower: Node2D = null
+var tower_count: int = 0
 
 func _ready() -> void:
 	setup_pathfinding()
@@ -180,11 +181,13 @@ func _unhandled_input(event: InputEvent) -> void:
 						# Everything is valid, so actually buy the tower
 						game.coins -= cost
 						blocked_cells.append(cell)
+						tower_count += 1
 
 						var tower = tower_scene.instantiate()
 
 						tower.position = cell_to_position(cell)
 						tower.setup_tower(game.selected_tower)
+						tower.placed_cost = cost
 
 						add_child(tower)
 
@@ -192,11 +195,38 @@ func _unhandled_input(event: InputEvent) -> void:
 						print("Placed tower for ", cost, " coins")
 						print("Coins remaining: ", game.coins)
 
-						path_changed.emit()
-						queue_redraw()
+					path_changed.emit()
+					queue_redraw()
+
+		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			var cell: Vector2i = mouse_to_cell()
+			if blocked_cells.has(cell):
+				sell_tower(cell)
+
+func sell_tower(cell: Vector2i) -> void:
+	for child in get_children():
+		if child is Node2D and not child.is_ghost and position_to_cell(child.position) == cell:
+			var refund: int = child.placed_cost / 2
+			game.coins += refund
+			child.queue_free()
+			break
+
+	astar.set_point_solid(cell, false)
+	blocked_cells.erase(cell)
+
+	tower_removed()
+	action_text.text = ""
+	print("Sold tower for refund")
 
 func calculate_enemy_path(start_cell: Vector2i) -> Array[Vector2i]:
 	return astar.get_id_path(start_cell, BASE_CELL)
+
+func get_path_stretch() -> float:
+	return 1.0 + log(tower_count + 1) * 0.25
+
+func tower_removed() -> void:
+	tower_count -= 1
+	path_changed.emit()
 
 func position_to_cell(pos: Vector2) -> Vector2i:
 	return Vector2i(
@@ -217,39 +247,17 @@ func can_place_tower(cell: Vector2i) -> bool:
 	# Temporarily block the cell
 	astar.set_point_solid(cell, true)
 
-	var enemies := get_tree().get_nodes_in_group("enemies")
+	# Check if there is still a path from A to B
+	var test_path: Array[Vector2i] = astar.get_id_path(
+		START_CELL,
+		BASE_CELL
+	)
 
-	# No enemies yet: check that A can still reach B
-	if enemies.is_empty():
-		var start_path: Array[Vector2i] = astar.get_id_path(
-			START_CELL,
-			BASE_CELL
-		)
-
-		if start_path.is_empty():
-			astar.set_point_solid(cell, false)
-			return false
-
-	else:
-		# Enemies exist: check every enemy
-		for enemy_node in enemies:
-			if not is_instance_valid(enemy_node):
-				continue
-
-			var current_enemy_cell: Vector2i = position_to_cell(enemy_node.position)
-
-			var enemy_path: Array[Vector2i] = astar.get_id_path(
-				current_enemy_cell,
-				BASE_CELL
-			)
-
-			if enemy_path.is_empty():
-				astar.set_point_solid(cell, false)
-				return false
-
-	# Everything is reachable
+	# Unblock the cell again
 	astar.set_point_solid(cell, false)
-	return true
+
+	# No path = cannot place tower
+	return not test_path.is_empty()
 
 func update_ghost_tower() -> void:
 	if ghost_tower == null:

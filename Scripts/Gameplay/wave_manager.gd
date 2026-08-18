@@ -3,6 +3,7 @@ extends Node2D
 @export var enemy_scene: PackedScene
 
 @onready var map: Node2D = $"../Map"
+@onready var game = get_parent()
 @onready var wave_text = $"../CanvasLayer/Bottom Panel/Wave Text"
 @onready var wave_counter = $"../CanvasLayer/Wave Counter"
 
@@ -31,7 +32,7 @@ func _ready() -> void:
 
 
 func start_wave() -> void:
-	while current_wave < waves.size():
+	while true:
 		current_wave += 1
 		wave_counter.text = str("Wave ", current_wave)
 
@@ -39,7 +40,7 @@ func start_wave() -> void:
 
 		spawning = true
 
-		await spawn_wave()
+		spawn_wave()
 
 		spawning = false
 
@@ -47,32 +48,25 @@ func start_wave() -> void:
 		print(">>> ENEMIES ALIVE: ", get_tree().get_nodes_in_group("enemies").size())
 
 		while not get_tree().get_nodes_in_group("enemies").is_empty():
+			if game.game_over:
+				return
 			await get_tree().create_timer(0.2).timeout
-		
-		$"../CanvasLayer/Bottom Panel/Action Text".text = ""
+
+		if game.game_over:
+			wave_text.add_theme_color_override("font_color", Color.RED)
+			wave_text.text = "GAME OVER"
+			return
 
 		print(">>> WAVE ", current_wave, " COMPLETED")
 
 		await wave_complete_action_text()
 
 
-		await get_tree().create_timer(5.0).timeout
-
-	print(">>> ALL WAVES COMPLETED")
-
-
 func spawn_wave() -> void:
-	var wave: Dictionary = waves[current_wave - 1]
-	var enemies: Array = wave["enemies"]
-
-	print("Wave ", current_wave, " has ", enemies.size(), " enemies")
-
-	for enemy_type: Variant in enemies:
-		print("Spawning: ", enemy_type)
-
-		spawn_enemy(str(enemy_type))
-
-		await get_tree().create_timer(TIME_BETWEEN_ENEMIES).timeout
+	if current_wave <= waves.size():
+		spawn_handmade_wave()
+	else:
+		spawn_random_wave()
 
 
 func spawn_enemy(type_name: String) -> void:
@@ -112,6 +106,10 @@ func get_enemy_type(type_name: String) -> int:
 			return 1
 		"tank":
 			return 2
+		"shield":
+			return 3
+		"fanatic":
+			return 4
 		_:
 			print("Unknown enemy type: ", type_name)
 			return 0
@@ -128,3 +126,62 @@ func wave_complete_action_text() -> void:
 		await get_tree().create_timer(1.0).timeout
 
 	wave_text.text = ""
+
+func spawn_handmade_wave() -> void:
+	var wave: Dictionary = waves[current_wave - 1]
+	var enemies: Array = wave["enemies"]
+
+	print("Wave ", current_wave, " has ", enemies.size(), " enemies")
+
+	for enemy_type: Variant in enemies:
+		if game.game_over:
+			return
+
+		print("Spawning: ", enemy_type)
+
+		spawn_enemy(str(enemy_type))
+
+		await get_tree().create_timer(TIME_BETWEEN_ENEMIES).timeout
+
+func spawn_random_wave() -> void:
+	var enemy_count: int = 3 + current_wave
+
+	print(
+		"Random wave ",
+		current_wave,
+		" has ",
+		enemy_count,
+		" enemies"
+	)
+
+	for i in range(enemy_count):
+		if game.game_over:
+			return
+
+		var enemy_type := get_random_enemy_type()
+
+		print("Spawning random: ", enemy_type)
+
+		spawn_enemy(enemy_type)
+
+		await get_tree().create_timer(TIME_BETWEEN_ENEMIES).timeout
+
+func get_random_enemy_type() -> String:
+	var roll := randf()
+
+	if current_wave < 7:
+		if roll < 0.7:
+			return "normal"
+		else:
+			return "fast"
+
+	if roll < 0.35:
+		return "normal"
+	elif roll < 0.55:
+		return "fast"
+	elif roll < 0.75:
+		return "tank"
+	elif roll < 0.88:
+		return "shield"
+	else:
+		return "fanatic"

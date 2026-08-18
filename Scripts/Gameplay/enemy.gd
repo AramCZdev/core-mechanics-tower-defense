@@ -3,7 +3,8 @@ extends Node2D
 enum EnemyType {
 	NORMAL,
 	FAST,
-	TANK
+	TANK,
+	FANATIC
 }
 
 var enemy_type: EnemyType = EnemyType.NORMAL
@@ -11,6 +12,7 @@ var enemy_type: EnemyType = EnemyType.NORMAL
 var health: int
 var max_health: int
 var speed: float
+var base_speed: float
 var reward: int
 
 var path: Array[Vector2i] = []
@@ -19,6 +21,8 @@ var hit_flash_timer: float = 0.0
 const HIT_FLASH_DURATION := 0.1
 var coin_reward: int = 100
 var is_dead := false
+var base_damage: int = 1
+var current_direction: Vector2 = Vector2.RIGHT
 
 @onready var map: Node2D = get_parent().get_node("Map")
 @onready var game = get_parent()
@@ -45,10 +49,13 @@ func _process(delta: float) -> void:
 		queue_redraw()
 
 	if path_index >= path.size():
-		die()
+		reach_base()
 		return
 
 	var target: Vector2 = map.cell_to_position(path[path_index])
+	current_direction = (target - position).normalized()
+
+	speed = base_speed * map.get_path_stretch()
 
 	position = position.move_toward(target, speed * delta)
 
@@ -74,7 +81,27 @@ func die() -> void:
 		return
 
 	is_dead = true
+
+	if enemy_type == EnemyType.FANATIC:
+		for ally in get_tree().get_nodes_in_group("enemies"):
+			if ally == self or not is_instance_valid(ally):
+				continue
+			if ally.is_dead:
+				continue
+			if global_position.distance_to(ally.global_position) <= 120.0:
+				ally.health = min(ally.health + 50, ally.max_health)
+				ally.queue_redraw()
+
 	game.coins += coin_reward
+	remove_from_group("enemies")
+	queue_free()
+
+func reach_base() -> void:
+	if is_dead:
+		return
+
+	is_dead = true
+	game.take_base_damage(base_damage)
 	remove_from_group("enemies")
 	queue_free()
 
@@ -122,10 +149,11 @@ func _draw() -> void:
 			EnemyType.TANK:
 				enemy_color = Color.RED
 
+			EnemyType.FANATIC:
+				enemy_color = Color.PURPLE
+
 			_:
 				enemy_color = Color.GRAY
-
-	draw_circle(Vector2.ZERO, 20.0, enemy_color)
 
 	draw_circle(Vector2.ZERO, 20.0, enemy_color)
 
@@ -135,18 +163,28 @@ func setup_enemy(type: EnemyType) -> void:
 	match enemy_type:
 		EnemyType.NORMAL:
 			max_health = 100
-			speed = 100.0
+			base_speed = 70.0
 			coin_reward = 100
+			base_damage = 1
 
 		EnemyType.FAST:
 			max_health = 60
-			speed = 180.0
+			base_speed = 130.0
 			coin_reward = 125
+			base_damage = 1
 
 		EnemyType.TANK:
 			max_health = 300
-			speed = 60.0
+			base_speed = 45.0
 			coin_reward = 250
+			base_damage = 3
+
+		EnemyType.FANATIC:
+			max_health = 80
+			base_speed = 90.0
+			coin_reward = 150
+			base_damage = 1
 
 	health = max_health
+	speed = base_speed
 	queue_redraw()

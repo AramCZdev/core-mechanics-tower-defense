@@ -32,7 +32,7 @@
 	},
 	{
 	  "enemies": [
-		"tank",
+		"shield",
 		"tank",
 		"fast",
 		"fast",
@@ -42,12 +42,22 @@
 	  "enemies": [
 		"fast",
 		"fast",
+		"fanatic",
 		"fast",
 		"fast",
+		"fanatic",
 		"fast",
 		"fast",
+	  ]
+	},
+	{
+	  "enemies": [
+		"shield",
+		"fanatic",
+		"tank",
+		"normal",
 		"fast",
-		"fast",
+		"shield",
 	  ]
 	},
   ]

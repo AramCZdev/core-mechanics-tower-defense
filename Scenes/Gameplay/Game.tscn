@@ -257,6 +257,16 @@ text = "wave "
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Base HP" type="Label" parent="CanvasLayer"]
+z_index = 20
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 210.0
+offset_bottom = 40.0
+text = "Base: 20/20"
+horizontal_alignment = 0
+vertical_alignment = 1
+
 [connection signal="pressed" from="CanvasLayer/Shop/VBoxContainer/NormalTowerButton" to="." method="_on_normal_tower_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Shop/VBoxContainer/FastTowerButton" to="." method="_on_fast_tower_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Shop/VBoxContainer/CanonButton" to="." method="_on_canon_button_pressed"]

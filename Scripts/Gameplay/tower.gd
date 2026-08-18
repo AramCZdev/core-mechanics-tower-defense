@@ -10,6 +10,7 @@ var current_target: Node2D = null
 var cooldown_timer: float = 0.0
 
 var is_ghost: bool = false
+var placed_cost: int = 0
 
 func setup_tower(type: int) -> void:
 	tower_type = type

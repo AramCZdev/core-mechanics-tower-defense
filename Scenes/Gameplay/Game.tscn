@@ -197,6 +197,7 @@ offset_top = 10.0
 offset_right = 41.475
 offset_bottom = 242.5
 grow_horizontal = 2
+theme_override_constants/separation = 6
 
 [node name="NormalTowerButton" type="Button" parent="CanvasLayer/Shop/VBoxContainer" unique_id=1093600158]
 layout_mode = 2

@@ -5,7 +5,8 @@ enum EnemyType {
 	FAST,
 	TANK,
 	FANATIC,
-	FLYING
+	FLYING,
+	SUPER_TANK
 }
 
 var enemy_type: EnemyType = EnemyType.NORMAL
@@ -94,7 +95,7 @@ func die() -> void:
 			if ally.is_dead:
 				continue
 			if global_position.distance_to(ally.global_position) <= 160.0:
-				ally.health = min(ally.health + 75, ally.max_health)
+				ally.health = min(ally.health + 1000, ally.max_health)
 				ally.queue_redraw()
 
 	game.coins += coin_reward
@@ -159,9 +160,13 @@ func _draw() -> void:
 
 			EnemyType.FLYING:
 				enemy_color = Color.CYAN
+				
+			EnemyType.SUPER_TANK:
+				enemy_color = Color.BLACK
 
 			_:
 				enemy_color = Color.GRAY
+
 
 	draw_circle(Vector2.ZERO, 20.0, enemy_color)
 
@@ -198,6 +203,12 @@ func setup_enemy(type: EnemyType) -> void:
 			base_speed = 200.0
 			coin_reward = 200
 			base_damage = 2
+
+		EnemyType.SUPER_TANK:
+			max_health = 500
+			base_speed = 60.0
+			coin_reward = 300
+			base_damage = 4
 
 	health = max_health
 	speed = base_speed

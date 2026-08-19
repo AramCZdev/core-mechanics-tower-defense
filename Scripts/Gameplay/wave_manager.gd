@@ -110,6 +110,8 @@ func get_enemy_type(type_name: String) -> int:
 			return 3
 		"flying":
 			return 4
+		"super_tank":
+			return 5
 		_:
 			print("Unknown enemy type: ", type_name)
 			return 0
@@ -181,7 +183,10 @@ func get_random_enemy_type() -> String:
 		return "fast"
 	elif roll < 0.72:
 		return "tank"
+	elif roll < 0.75:
+		return "flying"
 	elif roll < 0.85:
 		return "fanatic"
+
 	else:
-		return "flying"
+		return "super_tank"

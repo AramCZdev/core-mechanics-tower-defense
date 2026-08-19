@@ -118,8 +118,6 @@ func get_enemy_type(type_name: String) -> int:
 
 
 func wave_complete_action_text() -> void:
-	wave_text.add_theme_color_override("font_color", Color.WHITE)
-
 	wave_text.text = "Wave " + str(current_wave) + " completed!"
 	await get_tree().create_timer(1.0).timeout
 

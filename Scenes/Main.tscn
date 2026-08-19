@@ -3,6 +3,33 @@
 [ext_resource type="Script" uid="uid://ckx2y1kas2yno" path="res://Scripts/Menus/main.gd" id="1_r150o"]
 [ext_resource type="PackedScene" uid="uid://hhckm4437dhp" path="res://Scenes/Gameplay/Objects/grass.tscn" id="2_idj7w"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3182a"]
+bg_color = Color(1, 1, 1, 1)
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_size = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_idj7w"]
+bg_color = Color(0.446777, 0.44677705, 0.44677693, 1)
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_size = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kln2b"]
+bg_color = Color(0.50928617, 0.50928617, 0.50928617, 1)
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_size = 5
+
 [node name="Control" type="Control" unique_id=462977758]
 layout_mode = 3
 anchors_preset = 15
@@ -29,19 +56,41 @@ text = "Tower Defense: Their Path"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Play" type="Button" parent="." unique_id=409645824]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1403383883]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -70.5
-offset_top = -25.5
-offset_right = 70.5
-offset_bottom = 25.5
+offset_left = -263.0
+offset_top = -121.125
+offset_right = 263.0
+offset_bottom = 121.125
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 13
+
+[node name="Play" type="Button" parent="VBoxContainer" unique_id=409645824]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 0
+theme_override_font_sizes/font_size = 27
+theme_override_styles/normal = SubResource("StyleBoxFlat_3182a")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_idj7w")
+theme_override_styles/hover = SubResource("StyleBoxFlat_kln2b")
 text = "Start"
 
-[connection signal="pressed" from="Play" to="." method="_on_play_pressed"]
+[node name="Settings" type="Button" parent="VBoxContainer" unique_id=1113120965]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 0
+theme_override_font_sizes/font_size = 27
+theme_override_styles/normal = SubResource("StyleBoxFlat_3182a")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_idj7w")
+theme_override_styles/hover = SubResource("StyleBoxFlat_kln2b")
+text = "Settings"
+
+[connection signal="pressed" from="VBoxContainer/Play" to="." method="_on_play_pressed"]

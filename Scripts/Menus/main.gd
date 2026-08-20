@@ -2,10 +2,12 @@ extends Control
 
 @onready var main_menu = $Menu
 @onready var play_menu = $Difficulty
+@onready var settings_menu = $Settings
 
 func _ready() -> void:
 	play_menu.visible = false
 	main_menu.visible = true
+	settings_menu.visible = false
 
 func _on_play_pressed() -> void:
 	play_menu.visible = true
@@ -19,3 +21,9 @@ func _on_normal_mode_pressed() -> void:
 func _on_back_pressed() -> void:
 	play_menu.visible = false
 	main_menu.visible = true
+	settings_menu.visible = false
+
+
+func _on_settings_pressed() -> void:
+	settings_menu.visible = true
+	main_menu.visible = false

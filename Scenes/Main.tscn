@@ -43,6 +43,16 @@ bg_color = Color(1, 0.5294118, 0.5294118, 1)
 border_color = Color(0, 0, 0, 1)
 shadow_size = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1lfam"]
+bg_color = Color(1, 1, 1, 1)
+shadow_size = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hfr56"]
+bg_color = Color(0, 1, 0.01666665, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vy5pj"]
+bg_color = Color(0.57, 1, 0.5771667, 1)
+
 [node name="Control" type="Control" unique_id=462977758]
 layout_mode = 3
 anchors_preset = 15
@@ -70,6 +80,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Menu" type="VBoxContainer" parent="." unique_id=1403383883]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -118,6 +129,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_kln2b")
 text = "Credits"
 
 [node name="Difficulty" type="VBoxContainer" parent="." unique_id=816402471]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -165,6 +177,77 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_idj7w")
 theme_override_styles/hover = SubResource("StyleBoxFlat_kln2b")
 text = "Back"
 
+[node name="Settings" type="VBoxContainer" parent="." unique_id=1176258328]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -263.0
+offset_top = -121.125
+offset_right = 263.0
+offset_bottom = 207.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 13
+
+[node name="Volume" type="Panel" parent="Settings" unique_id=781313615]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_1lfam")
+
+[node name="Volume title" type="Label" parent="Settings/Volume" unique_id=1325958467]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.34500003
+anchor_right = 0.5
+anchor_bottom = 0.34500003
+offset_left = -50.0
+offset_top = -16.500004
+offset_right = 50.0
+offset_bottom = 16.499996
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "Volume"
+
+[node name="Volume Slider" type="HSlider" parent="Settings/Volume" unique_id=1291534797]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.70000005
+anchor_right = 0.5
+anchor_bottom = 0.70000005
+offset_left = -188.0
+offset_top = -8.000008
+offset_right = 188.0
+offset_bottom = 7.9999924
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_hfr56")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_vy5pj")
+value = 100.0
+
+[node name="idk yet" type="Panel" parent="Settings" unique_id=53782334]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_1lfam")
+
+[node name="Back" type="Button" parent="Settings" unique_id=253483294]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 0
+theme_override_font_sizes/font_size = 27
+theme_override_styles/normal = SubResource("StyleBoxFlat_3182a")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_idj7w")
+theme_override_styles/hover = SubResource("StyleBoxFlat_kln2b")
+text = "Back"
+
 [connection signal="pressed" from="Menu/Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="Menu/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="Difficulty/Normal Mode" to="." method="_on_normal_mode_pressed"]
 [connection signal="pressed" from="Difficulty/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="Settings/Back" to="." method="_on_back_pressed"]

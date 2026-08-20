@@ -6,73 +6,41 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3182a"]
 bg_color = Color(1, 1, 1, 1)
 border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 shadow_size = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_idj7w"]
 bg_color = Color(0.446777, 0.44677705, 0.44677693, 1)
 border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 shadow_size = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kln2b"]
 bg_color = Color(0.50928617, 0.50928617, 0.50928617, 1)
 border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 shadow_size = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jw32o"]
 bg_color = Color(0, 1, 0.01666665, 1)
 border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 shadow_size = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_50glp"]
 bg_color = Color(0.36862746, 1, 0.38039216, 1)
 border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 shadow_size = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rgh2o"]
 bg_color = Color(1, 1, 1, 1)
 border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 shadow_size = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pbw6q"]
 bg_color = Color(1, 0, 0, 1)
 border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 shadow_size = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v1gob"]
 bg_color = Color(1, 0.5294118, 0.5294118, 1)
 border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 shadow_size = 5
 
 [node name="Control" type="Control" unique_id=462977758]
@@ -111,7 +79,7 @@ anchor_bottom = 0.5
 offset_left = -263.0
 offset_top = -121.125
 offset_right = 263.0
-offset_bottom = 121.125
+offset_bottom = 207.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 13
@@ -138,8 +106,18 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_idj7w")
 theme_override_styles/hover = SubResource("StyleBoxFlat_kln2b")
 text = "Settings"
 
+[node name="Credits" type="Button" parent="Menu" unique_id=1174353672]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 0
+theme_override_font_sizes/font_size = 27
+theme_override_styles/normal = SubResource("StyleBoxFlat_3182a")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_idj7w")
+theme_override_styles/hover = SubResource("StyleBoxFlat_kln2b")
+text = "Credits"
+
 [node name="Difficulty" type="VBoxContainer" parent="." unique_id=816402471]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -149,7 +127,7 @@ anchor_bottom = 0.5
 offset_left = -263.0
 offset_top = -121.125
 offset_right = 263.0
-offset_bottom = 121.125
+offset_bottom = 207.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 13
@@ -176,5 +154,17 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_pbw6q")
 theme_override_styles/hover = SubResource("StyleBoxFlat_v1gob")
 text = "Hard Mode"
 
+[node name="Back" type="Button" parent="Difficulty" unique_id=1378972679]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 0
+theme_override_font_sizes/font_size = 27
+theme_override_styles/normal = SubResource("StyleBoxFlat_3182a")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_idj7w")
+theme_override_styles/hover = SubResource("StyleBoxFlat_kln2b")
+text = "Back"
+
 [connection signal="pressed" from="Menu/Play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="Difficulty/Normal Mode" to="." method="_on_normal_mode_pressed"]
+[connection signal="pressed" from="Difficulty/Back" to="." method="_on_back_pressed"]

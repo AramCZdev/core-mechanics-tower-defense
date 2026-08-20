@@ -1,5 +1,6 @@
 extends Node2D
 
+@onready var pause_animation = $"CanvasLayer/Bottom Panel/Pause Animation"
 @onready var coin_counter = $"CanvasLayer/Coin Counter"
 @onready var base_hp_label = $"CanvasLayer/Base HP"
 
@@ -60,3 +61,19 @@ func get_selected_tower_cost() -> int:
 			return CANNON_COST
 
 	return 0
+
+
+func _on_pause_pressed() -> void:
+	pause_animation.play("pause")
+	get_tree().paused = true
+	$"CanvasLayer/Bottom Panel/Action Text".text = "Paused"
+
+
+func _on_resume_pressed() -> void:
+	pause_animation.play("resume")
+	get_tree().paused = false
+	$"CanvasLayer/Bottom Panel/Action Text".text = ""
+
+
+func _on_menu_pressed() -> void:
+	get_tree().change_scene_to_file("res://Scenes/Main.tscn")

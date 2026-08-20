@@ -6,7 +6,8 @@ enum EnemyType {
 	TANK,
 	FANATIC,
 	FLYING,
-	SUPER_TANK
+	SUPER_TANK,
+	GIGANT
 }
 
 var enemy_type: EnemyType = EnemyType.NORMAL
@@ -160,9 +161,12 @@ func _draw() -> void:
 
 			EnemyType.FLYING:
 				enemy_color = Color.CYAN
-				
+
 			EnemyType.SUPER_TANK:
 				enemy_color = Color.BLACK
+
+			EnemyType.GIGANT:
+				enemy_color = Color.ORANGE
 
 			_:
 				enemy_color = Color.GRAY
@@ -209,6 +213,12 @@ func setup_enemy(type: EnemyType) -> void:
 			base_speed = 60.0
 			coin_reward = 300
 			base_damage = 4
+
+		EnemyType.GIGANT:
+			max_health = 1500
+			base_speed = 30.0
+			coin_reward = 1000
+			base_damage = 10
 
 	health = max_health
 	speed = base_speed

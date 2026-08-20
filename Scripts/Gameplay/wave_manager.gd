@@ -63,7 +63,9 @@ func start_wave() -> void:
 
 
 func spawn_wave() -> void:
-	if current_wave <= waves.size():
+	if current_wave % 15 == 0:
+		spawn_boss_wave()
+	elif current_wave <= waves.size():
 		spawn_handmade_wave()
 	else:
 		spawn_random_wave()
@@ -112,6 +114,8 @@ func get_enemy_type(type_name: String) -> int:
 			return 4
 		"super_tank":
 			return 5
+		"gigant":
+			return 6
 		_:
 			print("Unknown enemy type: ", type_name)
 			return 0
@@ -188,3 +192,14 @@ func get_random_enemy_type() -> String:
 
 	else:
 		return "super_tank"
+
+func spawn_boss_wave() -> void:
+	print("BOSS WAVE ", current_wave)
+
+	spawn_enemy("gigant")
+
+	await get_tree().create_timer(TIME_BETWEEN_ENEMIES).timeout
+
+	# Optional supporting enemies
+	spawn_enemy("tank")
+	spawn_enemy("fanatic")

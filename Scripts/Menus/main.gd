@@ -17,6 +17,7 @@ func _on_play_pressed() -> void:
 
 func _on_normal_mode_pressed() -> void:
 	get_tree().change_scene_to_file("res://Scenes/Gameplay/Game.tscn")
+	SettingsManager.game_mode = SettingsManager.GameMode.NORMAL
 
 
 func _on_back_pressed() -> void:
@@ -32,3 +33,8 @@ func _on_settings_pressed() -> void:
 
 func _on_health_bars_toggled(toggled_on: bool) -> void:
 	SettingsManager.set_setting("health_bar", toggled_on)
+
+
+func _on_hard_mode_pressed() -> void:
+	get_tree().change_scene_to_file("res://Scenes/Gameplay/Game.tscn")
+	SettingsManager.game_mode = SettingsManager.GameMode.HARD

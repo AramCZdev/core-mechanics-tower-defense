@@ -272,13 +272,13 @@ vertical_alignment = 1
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
-anchor_top = 0.63900006
+anchor_top = 0.688
 anchor_right = 0.5
-anchor_bottom = 0.63900006
+anchor_bottom = 0.688
 offset_left = -169.0
-offset_top = -12.039009
+offset_top = -15.987999
 offset_right = 169.0
-offset_bottom = 11.960991
+offset_bottom = 16.012001
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -306,6 +306,7 @@ text = "Back"
 [connection signal="pressed" from="Menu/Play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="Menu/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="Difficulty/Normal Mode" to="." method="_on_normal_mode_pressed"]
+[connection signal="pressed" from="Difficulty/Hard Mode" to="." method="_on_hard_mode_pressed"]
 [connection signal="pressed" from="Difficulty/Back" to="." method="_on_back_pressed"]
 [connection signal="toggled" from="Settings/Other/Health Bars" to="." method="_on_health_bars_toggled"]
 [connection signal="pressed" from="Settings/Back" to="." method="_on_back_pressed"]

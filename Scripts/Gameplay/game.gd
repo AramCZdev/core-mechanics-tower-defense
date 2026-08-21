@@ -14,11 +14,57 @@ const NORMAL_COST: int = 100
 const FAST_COST: int = 200
 const CANNON_COST: int = 300
 
+const NORMAL_COST_HARD: int = 200
+const FAST_COST_HARD: int = 400
+const CANNON_COST_HARD: int = 600
+
 var selected_tower: TowerType = TowerType.NORMAL
 var coins: int = 300
 var base_hp: int = 20
 var max_base_hp: int = 20
 var game_over: bool = false
+
+func get_tower_cost(tower_type: int) -> int:
+	var cost: int
+
+	if SettingsManager.game_mode == SettingsManager.GameMode.HARD:
+		match tower_type:
+			0:
+				cost = NORMAL_COST_HARD
+			1:
+				cost = FAST_COST_HARD
+			2:
+				cost = CANNON_COST_HARD
+			_:
+				cost = 0
+	else:
+		match tower_type:
+			0:
+				cost = NORMAL_COST
+			1:
+				cost = FAST_COST
+			2:
+				cost = CANNON_COST
+			_:
+				cost = 0
+
+	return cost
+
+func _ready() -> void:
+	if SettingsManager.game_mode == SettingsManager.GameMode.HARD:
+		$CanvasLayer/Shop/VBoxContainer/NormalTowerButton.tooltip_text = "Normal Tower
+Costs: 200$"
+		$CanvasLayer/Shop/VBoxContainer/FastTowerButton.tooltip_text = "Fast Tower
+Costs: 400$"
+		$CanvasLayer/Shop/VBoxContainer/CanonButton.tooltip_text = "Cannon
+Costs: 600$"
+	else:
+		$CanvasLayer/Shop/VBoxContainer/NormalTowerButton.tooltip_text = "Normal Tower
+Costs: 100$"
+		$CanvasLayer/Shop/VBoxContainer/FastTowerButton.tooltip_text = "Fast Tower
+Costs: 200$"
+		$CanvasLayer/Shop/VBoxContainer/CanonButton.tooltip_text = "Cannon
+Costs: 300$"
 
 func _process(_delta: float) -> void:
 	coin_counter.text = str(coins, "$")
@@ -52,15 +98,26 @@ func _on_canon_button_pressed() -> void:
 	print("Selected Canon")
 
 func get_selected_tower_cost() -> int:
-	match selected_tower:
-		TowerType.NORMAL:
-			return NORMAL_COST
-		TowerType.FAST:
-			return FAST_COST
-		TowerType.CANNON:
-			return CANNON_COST
+	var cost: int
 
-	return 0
+	match selected_tower:
+		0:
+			cost = NORMAL_COST
+		1:
+			cost = FAST_COST
+		2:
+			cost = CANNON_COST
+		_:
+			cost = 0
+
+	if SettingsManager.game_mode == SettingsManager.GameMode.HARD:
+		cost *= 2
+
+	print("Selected tower: ", selected_tower)
+	print("Game mode: ", SettingsManager.game_mode)
+	print("Tower cost: ", cost)
+
+	return cost
 
 
 func _on_pause_pressed() -> void:

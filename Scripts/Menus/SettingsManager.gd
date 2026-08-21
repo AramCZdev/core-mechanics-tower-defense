@@ -1,6 +1,12 @@
 extends Node
 
+enum GameMode {
+	NORMAL,
+	HARD
+}
+
 const SETTINGS_PATH = "user://settings.cfg"
+var game_mode: GameMode = GameMode.NORMAL
 var _data: Dictionary = {}
 
 func _ready() -> void:

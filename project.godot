@@ -19,6 +19,10 @@ boot_splash/stretch_mode=0
 boot_splash/use_filter=false
 config/icon="res://icon.svg"
 
+[autoload]
+
+SettingsManager="*uid://c2h4mvyj2yuvl"
+
 [display]
 
 window/size/viewport_width=1280

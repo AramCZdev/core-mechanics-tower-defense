@@ -22,7 +22,7 @@ func _ready() -> void:
 
 	print("Waves loaded: ", waves.size())
 
-	await get_tree().create_timer(2.0).timeout
+	await wait_seconds(2.0)
 
 	print("Calling start_wave()")
 
@@ -31,8 +31,23 @@ func _ready() -> void:
 	print("start_wave() finished")
 
 
+func wait_seconds(seconds: float) -> void:
+	var timer := get_tree().create_timer(seconds)
+
+	while timer.time_left > 0.0:
+		await get_tree().process_frame
+
+		# Wait while the game is paused.
+		while get_tree().paused:
+			await get_tree().process_frame
+
+
 func start_wave() -> void:
 	while true:
+		# Don't start anything while paused.
+		while get_tree().paused:
+			await get_tree().process_frame
+
 		current_wave += 1
 		wave_counter.text = str("Wave ", current_wave)
 
@@ -40,7 +55,7 @@ func start_wave() -> void:
 
 		spawning = true
 
-		spawn_wave()
+		await spawn_wave()
 
 		spawning = false
 
@@ -50,7 +65,11 @@ func start_wave() -> void:
 		while not get_tree().get_nodes_in_group("enemies").is_empty():
 			if game.game_over:
 				return
-			await get_tree().create_timer(0.2).timeout
+
+			while get_tree().paused:
+				await get_tree().process_frame
+
+			await wait_seconds(0.2)
 
 		if game.game_over:
 			wave_text.add_theme_color_override("font_color", Color.RED)
@@ -64,11 +83,11 @@ func start_wave() -> void:
 
 func spawn_wave() -> void:
 	if current_wave % 15 == 0:
-		spawn_boss_wave()
+		await spawn_boss_wave()
 	elif current_wave <= waves.size():
-		spawn_handmade_wave()
+		await spawn_handmade_wave()
 	else:
-		spawn_random_wave()
+		await spawn_random_wave()
 
 
 func spawn_enemy(type_name: String) -> void:
@@ -123,13 +142,19 @@ func get_enemy_type(type_name: String) -> int:
 
 func wave_complete_action_text() -> void:
 	wave_text.text = "Wave " + str(current_wave) + " completed!"
-	await get_tree().create_timer(1.0).timeout
+
+	await wait_seconds(1.0)
 
 	for seconds in [3, 2, 1]:
+		while get_tree().paused:
+			await get_tree().process_frame
+
 		wave_text.text = "Next wave in " + str(seconds) + "..."
-		await get_tree().create_timer(1.0).timeout
+
+		await wait_seconds(1.0)
 
 	wave_text.text = ""
+
 
 func spawn_handmade_wave() -> void:
 	var wave: Dictionary = waves[current_wave - 1]
@@ -141,11 +166,15 @@ func spawn_handmade_wave() -> void:
 		if game.game_over:
 			return
 
+		while get_tree().paused:
+			await get_tree().process_frame
+
 		print("Spawning: ", enemy_type)
 
 		spawn_enemy(str(enemy_type))
 
-		await get_tree().create_timer(TIME_BETWEEN_ENEMIES).timeout
+		await wait_seconds(TIME_BETWEEN_ENEMIES)
+
 
 func spawn_random_wave() -> void:
 	var enemy_count: int = 3 + current_wave
@@ -162,13 +191,17 @@ func spawn_random_wave() -> void:
 		if game.game_over:
 			return
 
+		while get_tree().paused:
+			await get_tree().process_frame
+
 		var enemy_type := get_random_enemy_type()
 
 		print("Spawning random: ", enemy_type)
 
 		spawn_enemy(enemy_type)
 
-		await get_tree().create_timer(TIME_BETWEEN_ENEMIES).timeout
+		await wait_seconds(TIME_BETWEEN_ENEMIES)
+
 
 func get_random_enemy_type() -> String:
 	var roll := randf()
@@ -189,17 +222,19 @@ func get_random_enemy_type() -> String:
 		return "flying"
 	elif roll < 0.85:
 		return "fanatic"
-
 	else:
 		return "super_tank"
+
 
 func spawn_boss_wave() -> void:
 	print("BOSS WAVE ", current_wave)
 
 	spawn_enemy("gigant")
 
-	await get_tree().create_timer(TIME_BETWEEN_ENEMIES).timeout
+	await wait_seconds(TIME_BETWEEN_ENEMIES)
 
-	# Optional supporting enemies
+	if game.game_over:
+		return
+
 	spawn_enemy("tank")
 	spawn_enemy("fanatic")

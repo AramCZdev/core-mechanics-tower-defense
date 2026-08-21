@@ -38,3 +38,7 @@ func _on_health_bars_toggled(toggled_on: bool) -> void:
 func _on_hard_mode_pressed() -> void:
 	get_tree().change_scene_to_file("res://Scenes/Gameplay/Game.tscn")
 	SettingsManager.game_mode = SettingsManager.GameMode.HARD
+
+
+func _on_credits_pressed() -> void:
+	get_tree().change_scene_to_file("res://Scenes/Menus/Credits.tscn")

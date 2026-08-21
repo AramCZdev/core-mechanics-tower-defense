@@ -11,6 +11,7 @@ var current_wave: int = 0
 var enemies_to_spawn: int = 0
 var spawning: bool = false
 var waves: Array = []
+var exiting := false
 
 const TIME_BETWEEN_ENEMIES := 1.0
 
@@ -22,7 +23,8 @@ func _ready() -> void:
 
 	print("Waves loaded: ", waves.size())
 
-	await wait_seconds(2.0)
+	if not await wait_seconds(2.0):
+		return
 
 	print("Calling start_wave()")
 
@@ -31,25 +33,25 @@ func _ready() -> void:
 	print("start_wave() finished")
 
 
-func wait_seconds(seconds: float) -> void:
-	var timer := get_tree().create_timer(seconds)
+func wait_seconds(seconds: float) -> bool:
+	if exiting or not is_inside_tree():
+		return false
 
-	while timer.time_left > 0.0:
-		await get_tree().process_frame
+	await get_tree().create_timer(seconds).timeout
 
-		# Wait while the game is paused.
-		while get_tree().paused:
-			await get_tree().process_frame
+	return not exiting and is_inside_tree()
 
 
 func start_wave() -> void:
-	while true:
-		# Don't start anything while paused.
-		while get_tree().paused:
+	while not exiting:
+		while not exiting and is_inside_tree() and get_tree().paused:
 			await get_tree().process_frame
 
+		if exiting:
+			return
+
 		current_wave += 1
-		wave_counter.text = str("Wave ", current_wave)
+		wave_counter.text = "Wave " + str(current_wave)
 
 		print(">>> STARTING WAVE ", current_wave)
 
@@ -57,19 +59,28 @@ func start_wave() -> void:
 
 		await spawn_wave()
 
+		if exiting:
+			return
+
 		spawning = false
 
 		print(">>> FINISHED SPAWNING WAVE ", current_wave)
-		print(">>> ENEMIES ALIVE: ", get_tree().get_nodes_in_group("enemies").size())
 
-		while not get_tree().get_nodes_in_group("enemies").is_empty():
+		while not exiting and is_inside_tree() and not get_tree().get_nodes_in_group("enemies").is_empty():
 			if game.game_over:
 				return
 
-			while get_tree().paused:
+			while not exiting and is_inside_tree() and get_tree().paused:
 				await get_tree().process_frame
 
-			await wait_seconds(0.2)
+			if exiting:
+				return
+
+			if not await wait_seconds(0.2):
+				return
+
+		if exiting:
+			return
 
 		if game.game_over:
 			wave_text.add_theme_color_override("font_color", Color.RED)
@@ -80,8 +91,14 @@ func start_wave() -> void:
 
 		await wave_complete_action_text()
 
+		if exiting:
+			return
+
 
 func spawn_wave() -> void:
+	if exiting:
+		return
+
 	if current_wave % 15 == 0:
 		await spawn_boss_wave()
 	elif current_wave <= waves.size():
@@ -143,13 +160,26 @@ func get_enemy_type(type_name: String) -> int:
 func wave_complete_action_text() -> void:
 	wave_text.text = "Wave " + str(current_wave) + " completed!"
 
-	await wait_seconds(1.0)
+	if not await wait_seconds(1.0):
+		return
 
 	for seconds in [3, 2, 1]:
-		while get_tree().paused:
+		if not is_inside_tree():
+			return
+
+		while is_inside_tree() and get_tree().paused:
 			await get_tree().process_frame
 
+			if not is_inside_tree():
+				return
+
 		wave_text.text = "Next wave in " + str(seconds) + "..."
+
+		if not await wait_seconds(1.0):
+			return
+
+	if is_inside_tree():
+		wave_text.text = ""
 
 		await wait_seconds(1.0)
 
@@ -166,7 +196,7 @@ func spawn_handmade_wave() -> void:
 		if game.game_over:
 			return
 
-		while get_tree().paused:
+		while is_inside_tree() and get_tree().paused:
 			await get_tree().process_frame
 
 		print("Spawning: ", enemy_type)
@@ -191,7 +221,7 @@ func spawn_random_wave() -> void:
 		if game.game_over:
 			return
 
-		while get_tree().paused:
+		while is_inside_tree() and get_tree().paused:
 			await get_tree().process_frame
 
 		var enemy_type := get_random_enemy_type()
@@ -236,5 +266,5 @@ func spawn_boss_wave() -> void:
 	if game.game_over:
 		return
 
-	spawn_enemy("tank")
-	spawn_enemy("fanatic")
+func _exit_tree() -> void:
+	exiting = true

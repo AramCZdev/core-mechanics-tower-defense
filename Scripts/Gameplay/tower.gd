@@ -83,7 +83,31 @@ func find_target() -> Node2D:
 
 func attack(target: Node2D) -> void:
 	var tower_count: int = map.tower_count
-	var multiplier: float = 1.0 - max(0, tower_count - 5) * 0.01
+	var multiplier: float = 1.0
+
+	if SettingsManager.game_mode == SettingsManager.GameMode.HARD:
+		if tower_count < 10:
+			multiplier = 1.0
+		elif tower_count < 15:
+			multiplier = 0.9
+		elif tower_count < 20:
+			multiplier = 0.8
+		elif tower_count < 25:
+			multiplier = 0.7
+		else:
+			multiplier = 0.6
+	else:
+		if tower_count < 10:
+			multiplier = 1.0
+		elif tower_count < 15:
+			multiplier = 0.95
+		elif tower_count < 20:
+			multiplier = 0.9
+		elif tower_count < 25:
+			multiplier = 0.85
+		else:
+			multiplier = 0.8
+
 	var final_damage: int = int(damage * multiplier)
 
 	target.take_damage(final_damage)

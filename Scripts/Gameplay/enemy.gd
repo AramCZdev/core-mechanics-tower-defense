@@ -40,13 +40,14 @@ func _ready() -> void:
 	if enemy_type == EnemyType.FLYING:
 		path = map.calculate_flying_path(spawn_cell)
 	else:
-		map.path_changed.connect(_on_path_changed)
+		if not map.path_changed.is_connected(_on_path_changed):
+			map.path_changed.connect(_on_path_changed)
+
 		path = map.calculate_enemy_path(spawn_cell)
 
 	if path.is_empty():
 		print("No path to base from ", spawn_cell)
 		return
-
 	path_index = 1
 
 	position = map.cell_to_position(path[0])
@@ -160,7 +161,7 @@ func _draw() -> void:
 	var enemy_color: Color
 
 	if hit_flash_timer > 0.0:
-		enemy_color = Color(0.35, 0.0, 0.0)
+		enemy_color = Color(0.35, 0.0, 0.0, 1.0)
 	else:
 		match enemy_type:
 			EnemyType.NORMAL:

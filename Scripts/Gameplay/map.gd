@@ -9,8 +9,8 @@ const GRID_WIDTH := 12
 const GRID_HEIGHT := 7
 
 const START_CELL := Vector2i(0, 3)
+const START_CELL_HARD := Vector2i(0, 5)
 const BASE_CELL := Vector2i(11, 3)
-const BASE_ATTACK_RANGE := 200.0
 
 @onready var game = get_tree().current_scene
 @onready var action_text = $"../CanvasLayer/Bottom Panel/Action Text"
@@ -89,6 +89,17 @@ func _draw() -> void:
 		),
 		Color(0.0, 1.0, 0.0, 0.25)
 	)
+	# Point A Hard Mode
+	if SettingsManager.game_mode == SettingsManager.GameMode.HARD:
+		draw_rect(
+			Rect2(
+				START_CELL_HARD.x * CELL_SIZE,
+				START_CELL_HARD.y * CELL_SIZE,
+				CELL_SIZE,
+				CELL_SIZE
+			),
+			Color(0.0, 1.0, 0.0, 0.25)
+		)
 
 	# Point B
 	draw_rect(
@@ -104,15 +115,15 @@ func _draw() -> void:
 	# Base attack range
 	var base_position := cell_to_position(BASE_CELL)
 
-	draw_circle(
-		base_position,
-		BASE_ATTACK_RANGE,
-		Color(1.0, 0.0, 0.0, 0.1)
-	)
-
 	# A marker
 	var start_position := cell_to_position(START_CELL)
 	draw_circle(start_position, 25.0, Color.GREEN)
+
+	# A Marker Hard Mode
+	var start_position_hard := cell_to_position(START_CELL_HARD)
+
+	if SettingsManager.game_mode == SettingsManager.GameMode.HARD:
+		draw_circle(start_position_hard, 25.0, Color.GREEN)
 
 	# B marker
 	draw_circle(base_position, 30.0, Color.RED)
@@ -153,7 +164,15 @@ func _unhandled_input(event: InputEvent) -> void:
 			if cell.x >= 0 and cell.x < GRID_WIDTH and cell.y >= 0 and cell.y < GRID_HEIGHT:
 				if cell != START_CELL and cell != BASE_CELL:
 					var dist_to_spawn: int = absi(cell.x - START_CELL.x) + absi(cell.y - START_CELL.y)
-					if dist_to_spawn <= 1:
+
+					if SettingsManager.game_mode == SettingsManager.GameMode.HARD:
+						var dist_to_spawn_hard: int = absi(cell.x - START_CELL_HARD.x) + absi(cell.y - START_CELL_HARD.y)
+
+						if dist_to_spawn <= 1 or dist_to_spawn_hard <= 1:
+							action_text.add_theme_color_override("font_color", Color.RED)
+							action_text.text = "Too close to enemy spawn"
+							return
+					elif dist_to_spawn <= 1:
 						action_text.add_theme_color_override("font_color", Color.RED)
 						action_text.text = "Too close to enemy spawn"
 						return
@@ -262,17 +281,28 @@ func can_place_tower(cell: Vector2i) -> bool:
 	# Temporarily block the cell
 	astar.set_point_solid(cell, true)
 
-	# Check if there is still a path from A to B
+	# Check the normal spawn
 	var test_path: Array[Vector2i] = astar.get_id_path(
 		START_CELL,
 		BASE_CELL
 	)
 
-	# Unblock the cell again
+	# Normal mode only needs one path
+	if SettingsManager.game_mode != SettingsManager.GameMode.HARD:
+		astar.set_point_solid(cell, false)
+		return not test_path.is_empty()
+
+	# Hard mode needs BOTH paths to remain open
+	var hard_path: Array[Vector2i] = astar.get_id_path(
+		START_CELL_HARD,
+		BASE_CELL
+	)
+
+	# Unblock the cell
 	astar.set_point_solid(cell, false)
 
-	# No path = cannot place tower
-	return not test_path.is_empty()
+	# Both spawns must have a route to the base
+	return not test_path.is_empty() and not hard_path.is_empty()
 
 func update_ghost_tower() -> void:
 	if ghost_tower == null:

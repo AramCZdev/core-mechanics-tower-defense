@@ -13,6 +13,7 @@ var spawning: bool = false
 var waves: Array = []
 var exiting := false
 
+
 const TIME_BETWEEN_ENEMIES := 1.0
 
 
@@ -107,21 +108,32 @@ func spawn_wave() -> void:
 		await spawn_random_wave()
 
 
-func spawn_enemy(type_name: String) -> void:
+func spawn_enemy(type_name: String, spawn_cell: Vector2i) -> void:
 	var enemy = enemy_scene.instantiate()
 
 	var enemy_type: int = get_enemy_type(type_name)
 
+	enemy.spawn_cell = spawn_cell
 	enemy.setup_enemy(enemy_type)
 
 	get_parent().add_child(enemy)
 
-
 func load_waves() -> void:
-	var file := FileAccess.open("res://Scripts/Gameplay/waves.json", FileAccess.READ)
+	var file: FileAccess
+
+	if SettingsManager.game_mode == SettingsManager.GameMode.HARD:
+		file = FileAccess.open(
+			"res://Scripts/Gameplay/waves_hard.json",
+			FileAccess.READ
+		)
+	else:
+		file = FileAccess.open(
+			"res://Scripts/Gameplay/waves.json",
+			FileAccess.READ
+		)
 
 	if file == null:
-		print("Could not open waves.json")
+		print("Could not open waves file")
 		return
 
 	var json_text := file.get_as_text()
@@ -199,15 +211,21 @@ func spawn_handmade_wave() -> void:
 		while is_inside_tree() and get_tree().paused:
 			await get_tree().process_frame
 
-		print("Spawning: ", enemy_type)
+		var type_name := str(enemy_type)
 
-		spawn_enemy(str(enemy_type))
+		print("Spawning: ", type_name)
+
+		if SettingsManager.game_mode == SettingsManager.GameMode.HARD:
+			spawn_enemy(type_name, map.START_CELL)
+			spawn_enemy(type_name, map.START_CELL_HARD)
+		else:
+			spawn_enemy(type_name, map.START_CELL)
 
 		await wait_seconds(TIME_BETWEEN_ENEMIES)
 
 
 func spawn_random_wave() -> void:
-	var enemy_count: int = 3 + current_wave
+	var enemy_count: int = 3 + int(current_wave * 0.5)
 
 	print(
 		"Random wave ",
@@ -228,7 +246,11 @@ func spawn_random_wave() -> void:
 
 		print("Spawning random: ", enemy_type)
 
-		spawn_enemy(enemy_type)
+		if SettingsManager.game_mode == SettingsManager.GameMode.HARD:
+			spawn_enemy(enemy_type, map.START_CELL)
+			spawn_enemy(enemy_type, map.START_CELL_HARD)
+		else:
+			spawn_enemy(enemy_type, map.START_CELL)
 
 		await wait_seconds(TIME_BETWEEN_ENEMIES)
 
@@ -259,7 +281,11 @@ func get_random_enemy_type() -> String:
 func spawn_boss_wave() -> void:
 	print("BOSS WAVE ", current_wave)
 
-	spawn_enemy("gigant")
+	if SettingsManager.game_mode == SettingsManager.GameMode.HARD:
+		spawn_enemy("gigant", map.START_CELL)
+		spawn_enemy("gigant", map.START_CELL_HARD)
+	else:
+		spawn_enemy("gigant", map.START_CELL)
 
 	await wait_seconds(TIME_BETWEEN_ENEMIES)
 

@@ -26,25 +26,36 @@ var coin_reward: int = 100
 var is_dead := false
 var base_damage: int = 1
 var current_direction: Vector2 = Vector2.RIGHT
+var spawn_cell: Vector2i = Vector2i.ZERO
 
 @onready var map: Node2D = get_parent().get_node("Map")
 @onready var game = get_parent()
 
-
 func _ready() -> void:
 	add_to_group("enemies")
 
+	# Always start exactly at the assigned spawn.
+	position = map.cell_to_position(spawn_cell)
+
 	if enemy_type == EnemyType.FLYING:
-		path = map.calculate_flying_path(map.START_CELL)
+		path = map.calculate_flying_path(spawn_cell)
 	else:
 		map.path_changed.connect(_on_path_changed)
-		path = map.calculate_enemy_path(map.START_CELL)
+		path = map.calculate_enemy_path(spawn_cell)
 
 	if path.is_empty():
-		print("No path to base!")
+		print("No path to base from ", spawn_cell)
 		return
 
+	path_index = 1
+
 	position = map.cell_to_position(path[0])
+
+	if enemy_type == EnemyType.FLYING:
+		path = map.calculate_flying_path(spawn_cell)
+	else:
+		map.path_changed.connect(_on_path_changed)
+		path = map.calculate_enemy_path(spawn_cell)
 
 
 

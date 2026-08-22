@@ -14,9 +14,9 @@ const NORMAL_COST: int = 100
 const FAST_COST: int = 200
 const CANNON_COST: int = 300
 
-const NORMAL_COST_HARD: int = 200
-const FAST_COST_HARD: int = 400
-const CANNON_COST_HARD: int = 600
+const NORMAL_COST_HARD: int = 150
+const FAST_COST_HARD: int = 300
+const CANNON_COST_HARD: int = 400
 
 var selected_tower: TowerType = TowerType.NORMAL
 var coins: int = 300
@@ -53,11 +53,11 @@ func get_tower_cost(tower_type: int) -> int:
 func _ready() -> void:
 	if SettingsManager.game_mode == SettingsManager.GameMode.HARD:
 		$CanvasLayer/Shop/VBoxContainer/NormalTowerButton.tooltip_text = "Normal Tower
-Costs: 200$"
+Costs: 150$"
 		$CanvasLayer/Shop/VBoxContainer/FastTowerButton.tooltip_text = "Fast Tower
-Costs: 400$"
+Costs: 300$"
 		$CanvasLayer/Shop/VBoxContainer/CanonButton.tooltip_text = "Cannon
-Costs: 600$"
+Costs: 400$"
 	else:
 		$CanvasLayer/Shop/VBoxContainer/NormalTowerButton.tooltip_text = "Normal Tower
 Costs: 100$"
@@ -111,7 +111,15 @@ func get_selected_tower_cost() -> int:
 			cost = 0
 
 	if SettingsManager.game_mode == SettingsManager.GameMode.HARD:
-		cost *= 2
+		match selected_tower:
+			0:
+				cost = NORMAL_COST_HARD
+			1:
+				cost = FAST_COST_HARD
+			2:
+				cost = CANNON_COST_HARD
+			_:
+				cost = 0
 
 	print("Selected tower: ", selected_tower)
 	print("Game mode: ", SettingsManager.game_mode)

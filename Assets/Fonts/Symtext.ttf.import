@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/Symtext.ttf-77c03d90d04d4368f643b2cf93d66a3e.
 [params]
 
 Rendering=null
-antialiasing=1
+antialiasing=0
 generate_mipmaps=false
 disable_embedded_bitmaps=true
 multichannel_signed_distance_field=false
